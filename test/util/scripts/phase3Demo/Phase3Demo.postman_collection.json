@@ -1,0 +1,1011 @@
+{
+	"info": {
+		"_postman_id": "453872cb-0a54-43c6-8779-7695d8ca6ca4",
+		"name": "Phase3Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Settlements",
+			"item": [
+				{
+					"name": "1-Init",
+					"item": [
+						{
+							"name": "1a-participants",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "1b-dfsp1/accounts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants/dfsp1/accounts",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants",
+										"dfsp1",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "1c-Hub/accounts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants/Hub/accounts",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants",
+										"Hub",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "1d-settlementWindow-1",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CS}}/settlementWindows/1",
+									"protocol": "http",
+									"host": [
+										"{{CS}}"
+									],
+									"path": [
+										"settlementWindows",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "2-Transfers",
+					"item": [
+						{
+							"name": "2a-prepare-101",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0"
+									},
+									{
+										"key": "Date",
+										"value": "{{headerDate}}"
+									},
+									{
+										"key": "FSPIOP-Source",
+										"value": "dfsp1"
+									},
+									{
+										"key": "FSPIOP-Destination",
+										"value": "dfsp2"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"transferId\": \"125ec534-ee48-4575-b6a9-ead2955b8101\",\n\t\"payerFsp\": \"dfsp1\",\n\t\"payeeFsp\": \"dfsp2\",\n\t\"amount\": {\n\t\t\"currency\": \"USD\",\n\t\t\"amount\": \"100\"\n\t},\n\t\"ilpPacket\": \"AYIBgQAAAAAAAASwNGxldmVsb25lLmRmc3AxLm1lci45T2RTOF81MDdqUUZERmZlakgyOVc4bXFmNEpLMHlGTFGCAUBQU0svMS4wCk5vbmNlOiB1SXlweUYzY3pYSXBFdzVVc05TYWh3CkVuY3J5cHRpb246IG5vbmUKUGF5bWVudC1JZDogMTMyMzZhM2ItOGZhOC00MTYzLTg0NDctNGMzZWQzZGE5OGE3CgpDb250ZW50LUxlbmd0aDogMTM1CkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbgpTZW5kZXItSWRlbnRpZmllcjogOTI4MDYzOTEKCiJ7XCJmZWVcIjowLFwidHJhbnNmZXJDb2RlXCI6XCJpbnZvaWNlXCIsXCJkZWJpdE5hbWVcIjpcImFsaWNlIGNvb3BlclwiLFwiY3JlZGl0TmFtZVwiOlwibWVyIGNoYW50XCIsXCJkZWJpdElkZW50aWZpZXJcIjpcIjkyODA2MzkxXCJ9IgA\",\n\t\"condition\": \"bSqIkHNqib-I69QFoVR--ja3L4Raye2WERq2Gzitb-U\",\n\t\"expiration\": \"2019-03-01T17:00:00.000+00:00\",\n\t\"extensionList\": {\n\t\t\"extension\": [{\n\t\t\t\"key\": \"key1\",\n\t\t\t\"value\": \"value1\"\n\t\t}]\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://{{ML}}/transfers",
+									"protocol": "http",
+									"host": [
+										"{{ML}}"
+									],
+									"path": [
+										"transfers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2b-prepare-102",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0"
+									},
+									{
+										"key": "Date",
+										"value": "{{headerDate}}"
+									},
+									{
+										"key": "FSPIOP-Source",
+										"value": "dfsp1"
+									},
+									{
+										"key": "FSPIOP-Destination",
+										"value": "dfsp2"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"transferId\": \"125ec534-ee48-4575-b6a9-ead2955b8102\",\n\t\"payerFsp\": \"dfsp1\",\n\t\"payeeFsp\": \"dfsp2\",\n\t\"amount\": {\n\t\t\"currency\": \"USD\",\n\t\t\"amount\": \"100\"\n\t},\n\t\"ilpPacket\": \"AYIBgQAAAAAAAASwNGxldmVsb25lLmRmc3AxLm1lci45T2RTOF81MDdqUUZERmZlakgyOVc4bXFmNEpLMHlGTFGCAUBQU0svMS4wCk5vbmNlOiB1SXlweUYzY3pYSXBFdzVVc05TYWh3CkVuY3J5cHRpb246IG5vbmUKUGF5bWVudC1JZDogMTMyMzZhM2ItOGZhOC00MTYzLTg0NDctNGMzZWQzZGE5OGE3CgpDb250ZW50LUxlbmd0aDogMTM1CkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbgpTZW5kZXItSWRlbnRpZmllcjogOTI4MDYzOTEKCiJ7XCJmZWVcIjowLFwidHJhbnNmZXJDb2RlXCI6XCJpbnZvaWNlXCIsXCJkZWJpdE5hbWVcIjpcImFsaWNlIGNvb3BlclwiLFwiY3JlZGl0TmFtZVwiOlwibWVyIGNoYW50XCIsXCJkZWJpdElkZW50aWZpZXJcIjpcIjkyODA2MzkxXCJ9IgA\",\n\t\"condition\": \"bSqIkHNqib-I69QFoVR--ja3L4Raye2WERq2Gzitb-U\",\n\t\"expiration\": \"2019-03-01T17:00:00.000+00:00\",\n\t\"extensionList\": {\n\t\t\"extension\": [{\n\t\t\t\"key\": \"key1\",\n\t\t\t\"value\": \"value1\"\n\t\t}]\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://{{ML}}/transfers",
+									"protocol": "http",
+									"host": [
+										"{{ML}}"
+									],
+									"path": [
+										"transfers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2c-get-101",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0"
+									},
+									{
+										"key": "Date",
+										"value": "{{headerDate}}"
+									},
+									{
+										"key": "FSPIOP-Source",
+										"value": "dfsp2"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{ML}}/transfers/125ec534-ee48-4575-b6a9-ead2955b8101",
+									"protocol": "http",
+									"host": [
+										"{{ML}}"
+									],
+									"path": [
+										"transfers",
+										"125ec534-ee48-4575-b6a9-ead2955b8101"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2d-fulfil-101",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.interoperability.transfers+json;version=1"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0"
+									},
+									{
+										"key": "Date",
+										"value": "{{headerDate}}"
+									},
+									{
+										"key": "FSPIOP-Source",
+										"value": "dfsp2"
+									},
+									{
+										"key": "FSPIOP-Destination",
+										"value": "dfsp1"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"fulfilment\": \"f5sqb7tBTWPd5Y8BDFdMm9BJR_MNI4isf8p8n4D5pHA\",\n\t\"transferState\": \"COMMITTED\",\n\t\"completedTimestamp\": \"2019-01-29T10:00:00.000+00:00\",\n\t\"extensionList\": {\n\t\t\"extension\": [{\n\t\t\t\"key\": \"fulfilmentKey1\",\n\t\t\t\"value\": \"fufiflmentValue1\"\n\t\t}]\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://{{ML}}/transfers/125ec534-ee48-4575-b6a9-ead2955b8101",
+									"protocol": "http",
+									"host": [
+										"{{ML}}"
+									],
+									"path": [
+										"transfers",
+										"125ec534-ee48-4575-b6a9-ead2955b8101"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2e-fulfil-102",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/vnd.interoperability.transfers+json;version=1"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0"
+									},
+									{
+										"key": "Date",
+										"value": "{{headerDate}}"
+									},
+									{
+										"key": "FSPIOP-Source",
+										"value": "dfsp2"
+									},
+									{
+										"key": "FSPIOP-Destination",
+										"value": "dfsp1"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"fulfilment\": \"f5sqb7tBTWPd5Y8BDFdMm9BJR_MNI4isf8p8n4D5pHA\",\n\t\"transferState\": \"COMMITTED\",\n\t\"completedTimestamp\": \"2019-01-29T10:00:00.000+00:00\",\n\t\"extensionList\": {\n\t\t\"extension\": [{\n\t\t\t\"key\": \"fufiflmentKey1\",\n\t\t\t\"value\": \"fufiflmentValue1\"\n\t\t}]\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://{{ML}}/transfers/125ec534-ee48-4575-b6a9-ead2955b8102",
+									"protocol": "http",
+									"host": [
+										"{{ML}}"
+									],
+									"path": [
+										"transfers",
+										"125ec534-ee48-4575-b6a9-ead2955b8102"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2f-get-101",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0"
+									},
+									{
+										"key": "Date",
+										"value": "{{headerDate}}"
+									},
+									{
+										"key": "FSPIOP-Source",
+										"value": "dfsp2"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{ML}}/transfers/125ec534-ee48-4575-b6a9-ead2955b8101",
+									"protocol": "http",
+									"host": [
+										"{{ML}}"
+									],
+									"path": [
+										"transfers",
+										"125ec534-ee48-4575-b6a9-ead2955b8101"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "-----sh21----->get-108--prepared",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0"
+									},
+									{
+										"key": "Date",
+										"value": "{{headerDate}}"
+									},
+									{
+										"key": "FSPIOP-Source",
+										"value": "dfsp3"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{ML}}/transfers/125ec534-ee48-4575-b6a9-ead2955b8108",
+									"protocol": "http",
+									"host": [
+										"{{ML}}"
+									],
+									"path": [
+										"transfers",
+										"125ec534-ee48-4575-b6a9-ead2955b8108"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "-----sh22----->get-110--fulfiled",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.interoperability.transfers+json;version=1.0"
+									},
+									{
+										"key": "Date",
+										"value": "{{headerDate}}"
+									},
+									{
+										"key": "FSPIOP-Source",
+										"value": "dfsp3"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{ML}}/transfers/125ec534-ee48-4575-b6a9-ead2955b8110",
+									"protocol": "http",
+									"host": [
+										"{{ML}}"
+									],
+									"path": [
+										"transfers",
+										"125ec534-ee48-4575-b6a9-ead2955b8110"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2g-dfsp1/accounts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants/dfsp1/accounts",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants",
+										"dfsp1",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2h-dfsp2/accounts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants/dfsp2/accounts",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants",
+										"dfsp2",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2i-dfsp3/accounts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants/dfsp3/accounts",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants",
+										"dfsp3",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "3-Settlement",
+					"item": [
+						{
+							"name": "3a-closeSettlementWindow-1",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"state\": \"CLOSED\",\n\t\"reason\": \"demo-close-window\"\n}"
+								},
+								"url": {
+									"raw": "http://{{CS}}/settlementWindows/1",
+									"protocol": "http",
+									"host": [
+										"{{CS}}"
+									],
+									"path": [
+										"settlementWindows",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3b-createSettlement-1",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"reason\": \"demo-create-settlement\",\n\t\"settlementWindows\": [\n\t\t{\n\t\t\t\"id\": 1\n\t\t}\n\t]\n}"
+								},
+								"url": {
+									"raw": "http://{{CS}}/settlements",
+									"protocol": "http",
+									"host": [
+										"{{CS}}"
+									],
+									"path": [
+										"settlements"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3c-psTransfersRecorded",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"participants\": [\n    {\n      \"id\": 2,\n      \"accounts\": [\n        {\n          \"id\": 3,\n          \"state\": \"PS_TRANSFERS_RECORDED\",\n          \"reason\": \"demo-ps-transfers-recorded-dfsp1\",\n          \"externalReference\": \"3c1\"\n        }\n      ]\n    },\n    {\n      \"id\": 3,\n      \"accounts\": [\n        {\n          \"id\": 5,\n          \"state\": \"PS_TRANSFERS_RECORDED\",\n          \"reason\": \"demo-ps-transfers-recorded-dfsp2\",\n          \"externalReference\": \"3c2\"\n        }\n      ]\n    },\n    {\n      \"id\": 4,\n      \"accounts\": [\n        {\n          \"id\": 7,\n          \"state\": \"PS_TRANSFERS_RECORDED\",\n          \"reason\": \"demo-ps-transfers-recorded-dfsp3\",\n          \"externalReference\": \"3c3\"\n        }\n      ]\n    }\n  ]\n}"
+								},
+								"url": {
+									"raw": "http://{{CS}}/settlements/1",
+									"protocol": "http",
+									"host": [
+										"{{CS}}"
+									],
+									"path": [
+										"settlements",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3d-dfsp1/accounts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants/dfsp1/accounts",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants",
+										"dfsp1",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3e-psTransfersReserved",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"participants\": [\n    {\n      \"id\": 2,\n      \"accounts\": [\n        {\n          \"id\": 3,\n          \"state\": \"PS_TRANSFERS_RESERVED\",\n          \"reason\": \"demo-ps-transfers-reserved-dfsp1\",\n          \"externalReference\": \"3e1\"\n        }\n      ]\n    },\n    {\n      \"id\": 3,\n      \"accounts\": [\n        {\n          \"id\": 5,\n          \"state\": \"PS_TRANSFERS_RESERVED\",\n          \"reason\": \"demo-ps-transfers-reserved-dfsp2\",\n          \"externalReference\": \"3e2\"\n        }\n      ]\n    },\n    {\n      \"id\": 4,\n      \"accounts\": [\n        {\n          \"id\": 7,\n          \"state\": \"PS_TRANSFERS_RESERVED\",\n          \"reason\": \"demo-ps-transfers-reserved-dfsp3\",\n          \"externalReference\": \"3e3\"\n        }\n      ]\n    }\n  ]\n}"
+								},
+								"url": {
+									"raw": "http://{{CS}}/settlements/1",
+									"protocol": "http",
+									"host": [
+										"{{CS}}"
+									],
+									"path": [
+										"settlements",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3f-dfsp1/accounts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants/dfsp1/accounts",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants",
+										"dfsp1",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3g-dfsp2/accounts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants/dfsp2/accounts",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants",
+										"dfsp2",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3h-dfsp3/accounts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants/dfsp3/accounts",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants",
+										"dfsp3",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3i-Hub/accounts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants/Hub/accounts",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants",
+										"Hub",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3j-psTransfersCommittedBySPA",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"state\": \"PS_TRANSFERS_COMMITTED\",\n  \"reason\": \"demo-ps-transfers-committed-dfsp2\",\n  \"externalReference\": \"3j2\"\n}"
+								},
+								"url": {
+									"raw": "http://{{CS}}/settlements/1/participants/3/accounts/5",
+									"protocol": "http",
+									"host": [
+										"{{CS}}"
+									],
+									"path": [
+										"settlements",
+										"1",
+										"participants",
+										"3",
+										"accounts",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3k-dfsp2/accounts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CL}}/participants/dfsp2/accounts",
+									"protocol": "http",
+									"host": [
+										"{{CL}}"
+									],
+									"path": [
+										"participants",
+										"dfsp2",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3l-getSettlementById",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://{{CS}}/settlements/1",
+									"protocol": "http",
+									"host": [
+										"{{CS}}"
+									],
+									"path": [
+										"settlements",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3m-psTransfersCommitted",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"participants\": [\n    {\n      \"id\": 2,\n      \"accounts\": [\n        {\n          \"id\": 3,\n          \"state\": \"PS_TRANSFERS_COMMITTED\",\n          \"reason\": \"demo-ps-transfers-committed-dfsp1\",\n          \"externalReference\": \"3m1\"\n        }\n      ]\n    },\n    {\n      \"id\": 4,\n      \"accounts\": [\n        {\n          \"id\": 7,\n          \"state\": \"PS_TRANSFERS_COMMITTED\",\n          \"reason\": \"demo-ps-transfers-committed-dfsp3\",\n          \"externalReference\": \"3m3\"\n        }\n      ]\n    }\n  ]\n}"
+								},
+								"url": {
+									"raw": "http://{{CS}}/settlements/1",
+									"protocol": "http",
+									"host": [
+										"{{CS}}"
+									],
+									"path": [
+										"settlements",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3n-settledBySP",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"accounts\": [\n    {\n      \"id\": 3,\n      \"state\": \"SETTLED\",\n      \"reason\": \"demo-settled-dfsp1\",\n      \"externalReference\": \"3n1\"\n    }\n  ]\n}"
+								},
+								"url": {
+									"raw": "http://{{CS}}/settlements/1/participants/2",
+									"protocol": "http",
+									"host": [
+										"{{CS}}"
+									],
+									"path": [
+										"settlements",
+										"1",
+										"participants",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3o-settled",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"participants\": [\n    {\n      \"id\": 3,\n      \"accounts\": [\n        {\n          \"id\": 5,\n          \"state\": \"SETTLED\",\n          \"reason\": \"demo-settled-dfsp2\",\n          \"externalReference\": \"3n2\"\n        }\n      ]\n    },\n    {\n      \"id\": 4,\n      \"accounts\": [\n        {\n          \"id\": 7,\n          \"state\": \"SETTLED\",\n          \"reason\": \"demo-settled-dfsp3\",\n          \"externalReference\": \"3n3\"\n        }\n      ]\n    }\n  ]\n}"
+								},
+								"url": {
+									"raw": "http://{{CS}}/settlements/1",
+									"protocol": "http",
+									"host": [
+										"{{CS}}"
+									],
+									"path": [
+										"settlements",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		}
+	]
+}
