@@ -85,6 +85,23 @@ do
   }'"
 
   echo
+  echo "Setting threshold to 20 percent for '$FSP'"
+  echo "---------------------------------------------------------------------"
+  sh -c "curl -X PUT \
+  ${CENTRAL_LEDGER_ADMIN_URI_PREFIX}://${CENTRAL_LEDGER_ADMIN_HOST}:${CENTRAL_LEDGER_ADMIN_PORT}${CENTRAL_LEDGER_ADMIN_BASE}participants/${FSP}/limits \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: c1d521e4-597a-4762-866a-646f91b45928' \
+  -H 'cache-control: no-cache' \
+  -d '{
+  \"currency\": \"USD\",
+  \"limit\": {
+    \"type\": \"NET_DEBIT_CAP\",
+    \"value\": ${DEFAULT_NET_DEBIT_CAP},
+    \"alarmPercentage\": 20
+    }
+  }'"
+
+  echo
   echo "Retrieving limits for '$FSP'"
   echo "---------------------------------------------------------------------"
   curl -X GET \
