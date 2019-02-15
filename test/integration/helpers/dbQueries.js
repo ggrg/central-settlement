@@ -26,7 +26,10 @@
 const Db = require('../../../src/models')
 
 module.exports = {
-  transfer: async function () {
+  // TODO: add where params to all queries, instead of looping the resultset.
+  // Utilize array.filter only when it is better suited to the test than the previous
+  // Underscore _ was added to the currently unused methods, please remove later
+  transferByParams_: async function () {
     try {
       return Db.transfer.query(async (builder) => {
         return builder.select('*').orderBy('createdDate', 'desc')
@@ -36,7 +39,7 @@ module.exports = {
     }
   },
 
-  settlements: async function () {
+  settlementByParams: async function () {
     try {
       return Db.settlement.query(async (builder) => {
         return builder.select('*').orderBy('createdDate', 'desc')
@@ -46,7 +49,7 @@ module.exports = {
     }
   },
 
-  settlementStateChange: async function () {
+  settlementStateChangeByParams: async function () {
     try {
       return Db.settlementStateChange.query(async (builder) => {
         return builder.select('*').orderBy('settlementId', 'desc')
@@ -56,7 +59,7 @@ module.exports = {
     }
   },
 
-  settlementWindowStateChange: async function (arr = []) {
+  settlementWindowStateChangeByParams: async function (arr = []) {
     try {
       return Db.settlementWindowStateChange.query(async (builder) => {
         let res = builder.select('*').orderBy('settlementWindowId', 'Desc')
@@ -70,7 +73,7 @@ module.exports = {
     }
   },
 
-  settlementParticipantCurrency: async function () {
+  settlementParticipantCurrencyByParams_: async function () {
     try {
       return Db.settlementParticipantCurrency.query(async (builder) => {
         return builder.select('*').orderBy('1', 'desc')
@@ -80,7 +83,7 @@ module.exports = {
     }
   },
 
-  settlementParticipantCurrencyStateChange: async function () {
+  settlementParticipantCurrencyStateChangeByParams_: async function () {
     try {
       return Db.settlementParticipantCurrencyStateChange.query(async (builder) => {
         return builder.select('*').orderBy('createdDate', 'desc')
@@ -90,7 +93,7 @@ module.exports = {
     }
   },
 
-  transferDuplicateCheck: async function () {
+  transferDuplicateCheckByParams_: async function () {
     try {
       return Db.transferDuplicateCheck.query(async (builder) => {
         return builder.select('*').orderBy('createdDate', 'desc')
@@ -100,10 +103,11 @@ module.exports = {
     }
   },
 
-  transferFulfilment: async function () {
+  transferFulfilmentByParams_: async function () {
     try {
       return Db.transferFulfilment.query(async (builder) => {
         return builder
+          // TODO: human-readable result is not needed. Remove all unnecessary alias and joins as you go
           .select('SUBSTRING(transferId, -20) AS trasnferId_20, SUBSTRING(transferFulfilmentId, -20) AS transferFulfilmentId_20,ilpFulfilment, completedDate, isValid, settlementWindowId, createdDate')
           .orderBy('createdDate', 'desc')
       })
@@ -112,10 +116,11 @@ module.exports = {
     }
   },
 
-  transferParticipant: async function () {
+  transferParticipantByParams_: async function () {
     try {
       return Db.transferParticipant.query(async (builder) => {
         return builder
+          // TODO: human-readable result is not needed. Remove all unnecessary alias and joins as you go
           .innerjoin('participantCurrency as pc', 'pc.participantCurrencyId', 'transferParticipant.participantCurrencyId')
           .innerjoin('ledgerAccountType as lat', 'lat.ledgerAccountTypeId', 'pc.ledgerAccountTypeId')
           .innerjoin('participant as p', 'p.participantId', 'pc.participantId')
@@ -132,10 +137,11 @@ module.exports = {
     }
   },
 
-  transferParticipantByAccount: async function () {
+  transferParticipantByAccountByParams_: async function () {
     try {
       return Db.transferParticipant.query(async (builder) => {
         return builder.select('*')
+          // TODO: human-readable result is not needed. Remove all unnecessary alias and joins as you go
           .innerjoin('participantCurrency as pc', 'pc.participantCurrencyId', 'transferParticipant.participantCurrencyId')
           .innerjoin('ledgerAccountType as lat', 'lat.ledgerAccountTypeId', 'pc.ledgerAccountTypeId')
           .innerjoin('participant as p', 'p.participantId', 'pc.participantId')
@@ -148,7 +154,7 @@ module.exports = {
     }
   },
 
-  transferStateChange: async function () {
+  transferStateChangeByParams_: async function () {
     try {
       return Db.transferStateChange.query(async (builder) => {
         return builder.select('*').orderBy('1', 'desc')
@@ -158,13 +164,14 @@ module.exports = {
     }
   },
 
-  participantPosition: async function () {
+  participantPositionByParams_: async function () {
     try {
       return Db.participantPosition.query(async (builder) => {
         return builder
+          // TODO: human-readable result is not needed. Remove all unnecessary alias and joins as you go
           .select(`participantPosition.participantPositionId AS id,
-        CONCAT(participantPosition.participantCurrencyId, '-', p.name, '-', lat.name) AS participantCurrencyId,
-        participantPosition.value, participantPosition.reservedValue, participantPosition.changedDate`)
+                 CONCAT(participantPosition.participantCurrencyId, '-', p.name, '-', lat.name) AS participantCurrencyId,
+                 participantPosition.value, participantPosition.reservedValue, participantPosition.changedDate`)
           .innerjoin('participantCurrency as pc', 'pc.participantCurrencyId', 'participantPosition.participantCurrencyId')
           .innerjoin('ledgerAccountType as lat', 'lat.ledgerAccountTypeId', 'pc.ledgerAccountTypeId')
           .innerjoin('participant as p', 'p.participantId', 'pc.participantId')
@@ -175,10 +182,11 @@ module.exports = {
     }
   },
 
-  participantPositionChange: async function () {
+  participantPositionChangeByParams_: async function () {
     try {
       return Db.participantPositionChange.query(async (builder) => {
         return builder
+          // TODO: human-readable result is not needed. Remove all unnecessary alias and joins as you go
           .select(`participantPositionChange.participantPositionChangeId AS id,
                  CONCAT(participantPositionChange.participantPositionId, '-', p.name, '-', lat.name) AS participantPositionId,
                  CONCAT(participantPositionChange.transferStateChangeId, '-', tsc.transferStateId, '-', tsc.transferId) transferStateChangeId,
@@ -195,10 +203,11 @@ module.exports = {
     }
   },
 
-  participantLimit: async () => {
+  participantLimitByParams_: async () => {
     try {
       return Db.participantLimit.query(async (builder) => {
         return builder
+          // TODO: human-readable result is not needed. Remove all unnecessary alias and joins as you go
           .select(`participantLimit.participantLimitId AS id,
                  CONCAT(participantLimit.participantCurrencyId, '-', p.name, '-', lat.name) AS participantCurrencyId,
                  CONCAT(participantLimit.participantLimitTypeId, '-', plt.name) AS participantLimitTypeId,
