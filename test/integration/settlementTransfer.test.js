@@ -43,6 +43,7 @@ const expectedRecordsAfterPsTransferRecordedForPayee = 8
 let expectedTransferStateChangeRecords = 1
 let expectedSettlementStateChangeRecords = 1
 let expectedSettlementParticipantCurrencyStateRecords = 2
+
 const getEnums = async () => {
   return {
     settlementWindowStates: await Enums.settlementWindowStates(),
@@ -148,7 +149,7 @@ Test('SettlementTransfer should', async settlementTransferTest => {
           }
         ]
       }
-      let res = await SettlementService.putById(settlementData.id, params, enums)
+      /* let res = */ await SettlementService.putById(settlementData.id, params, enums)
 
       // test the first one is changed to PS_TRANSFERS_RECORDED
       // test settlement transfer is created for the first one
@@ -209,7 +210,7 @@ Test('SettlementTransfer should', async settlementTransferTest => {
           }
         ]
       }
-      let res = await SettlementService.putById(settlementData.id, params, enums)
+      /* let res = */ await SettlementService.putById(settlementData.id, params, enums)
       // As PS_TRANSFERS_RECORDED was sent for the second account another settlement transfer has been created."
       // "settlementTransferId column was populated."
       let settlementParticipantCurrencyArray = await DbQueries.settlementParticipantCurrencyByParams({ settlementId: settlementData.id })
@@ -303,8 +304,8 @@ Test('SettlementTransfer should', async settlementTransferTest => {
 
       // "TODO => EXPECTED RESULT: NET_SETTLEMENT_RECIPIENT's position has been adjusted for the settlement transfer reservation."
       // "The change also affected the position of the HMLNS account."
-      let participantPositionByParamsArray = await DbQueries.participantPositionByParams()
-      //test.equal(participantPositionByParamsArray[6], -transferAmount, `HMS expected amount ${-transferAmount}`)
+      /* let participantPositionByParamsArray = */ await DbQueries.participantPositionByParams()
+      // test.equal(participantPositionByParamsArray[6], -transferAmount, `HMS expected amount ${-transferAmount}`)
 
       test.ok(res)
       test.end()
