@@ -34,6 +34,7 @@ const Db = require('../../src/models')
 const SettlementWindowService = require('../../src/domain/settlementWindow')
 const SettlementService = require('../../src/domain/settlement')
 const Enums = require('../../src/models/lib/enums')
+const SettlementWindowStateChangeModel = require('../../src/models/settlementWindow/settlementWindowStateChange')
 // require('leaked-handles').set({ fullStack: true, timeout: 15000, debugSockets: true })
 
 const hubId = 1
@@ -85,15 +86,11 @@ Test('SettlementTransfer should', async settlementTransferTest => {
       res = await SettlementWindowService.close(params, enums.settlementWindowStates)
       test.ok(res, `close operation returned result`)
 
-      let dbData = await DbQueries.settlementWindowStateChangeByParams([settlementWindowId, res.settlementWindowId])
-      let closedWindow = dbData.filter(window => {
-        return window.settlementWindowId === settlementWindowId && window.settlementWindowStateId === enums.settlementWindowStates.CLOSED
-      })
-      let openWindow = dbData.filter(window => {
-        return window.settlementWindowId === res.settlementWindowId && window.settlementWindowStateId === enums.settlementWindowStates.OPEN
-      })
-      test.equal(closedWindow.length, 1, `close window id ${settlementWindowId}`)
-      test.equal(openWindow.length, 1, `open window id ${res.settlementWindowId}`)
+      let closedWindow = await SettlementWindowStateChangeModel.getBySettlementWindowId(settlementWindowId)
+      let openWindow = await SettlementWindowStateChangeModel.getBySettlementWindowId(res.settlementWindowId)
+      test.equal(closedWindow.settlementWindowStateId, enums.settlementWindowStates.CLOSED, `window id ${settlementWindowId} is CLOSED`)
+      test.equal(openWindow.settlementWindowStateId, enums.settlementWindowStates.OPEN, `window id ${res.settlementWindowId} is OPEN`)
+
       test.end()
     } catch (err) {
       Logger.error(`settlementTransferTest failed with error - ${err}`)

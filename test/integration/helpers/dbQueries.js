@@ -58,20 +58,6 @@ module.exports = {
     }
   },
 
-  settlementWindowStateChangeByParams: async function (idList = []) {
-    try {
-      return Db.settlementWindowStateChange.query(async (builder) => {
-        let res = builder.select('*').orderBy('settlementWindowId', 'Desc')
-        if (idList) {
-          builder.whereIn('settlementWindowId', idList)
-        }
-        return res
-      })
-    } catch (e) {
-      throw e
-    }
-  },
-
   settlementParticipantCurrencyByParams: async function () {
     try {
       return Db.settlementParticipantCurrency.query(async (builder) => {

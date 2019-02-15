@@ -29,7 +29,7 @@ const Db = require('../index')
 
 const create = async ({ settlementWindowId, state, reason }, enums = {}) => {
   try {
-    return await Db.settlementWindowStateChange.insert({
+    return Db.settlementWindowStateChange.insert({
       settlementWindowId,
       settlementWindowStateId: enums[state.toUpperCase()],
       reason
@@ -39,6 +39,20 @@ const create = async ({ settlementWindowId, state, reason }, enums = {}) => {
   }
 }
 
+const getBySettlementWindowId = async (id) => {
+  try {
+    const knex = await Db.getKnex()
+    return knex('settlementWindowStateChange')
+      .where('settlementWindowId', id)
+      .orderBy('settlementWindowStateChangeId', 'desc')
+      .select('*')
+      .first()
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
-  create
+  create,
+  getBySettlementWindowId
 }
