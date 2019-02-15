@@ -39,16 +39,6 @@ module.exports = {
     }
   },
 
-  settlementByParams: async function (id) {
-    try {
-      return Db.settlement.query(async (builder) => {
-        return builder.select('*').orderBy('createdDate', 'desc').where('settlementId', id)
-      })
-    } catch (e) {
-      throw e
-    }
-  },
-
   // TODO: fix
   settlementStateChangeByParams: async function (params) {
     try {

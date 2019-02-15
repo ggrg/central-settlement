@@ -35,6 +35,8 @@ const SettlementWindowService = require('../../src/domain/settlementWindow')
 const SettlementService = require('../../src/domain/settlement')
 const Enums = require('../../src/models/lib/enums')
 const SettlementWindowStateChangeModel = require('../../src/models/settlementWindow/settlementWindowStateChange')
+const SettlementModel = require('../../src/models/settlement/settlement')
+const SettlementStateChangeModel = require('../../src/models/settlement/settlementStateChange')
 // require('leaked-handles').set({ fullStack: true, timeout: 15000, debugSockets: true })
 
 const hubId = 1
@@ -111,17 +113,14 @@ Test('SettlementTransfer should', async settlementTransferTest => {
       }
       settlementData = await SettlementService.settlementEventTrigger(params, enums)
 
-      let settlementWindowStateChangeArrat = await DbQueries.settlementWindowStateChangeByParams([settlementWindowId])
-      let pendingWindowArray = settlementWindowStateChangeArrat.filter(window => {
-        return window.settlementWindowStateId === enums.settlementWindowStates.PENDING_SETTLEMENT
-      })
-      test.equal(pendingWindowArray.length, 1, `change window id ${settlementWindowId} to ${enums.settlementWindowStates.PENDING_SETTLEMENT} state`)
+      let settlementWindow = await SettlementWindowStateChangeModel.getBySettlementWindowId(settlementWindowId)
+      test.equal(settlementWindow.settlementWindowStateId, enums.settlementWindowStates.PENDING_SETTLEMENT, `window id ${settlementWindowId} is PENDING_SETTLEMENT`)
 
-      let settlementArray = await DbQueries.settlementByParams(settlementData.id)
-      test.equal(settlementArray.length, 1, `create settlement with id ${settlementArray[0].settlementId}`)
+      let settlement = await SettlementModel.getById(settlementData.id)
+      test.ok(settlement, `create settlement with id ${settlementData.id}`)
 
-      let settlementStateChangeArray = await DbQueries.settlementStateChangeByParams()
-      test.equal(settlementStateChangeArray.length, 1, `change settlement state to ${enums.settlementStates.PENDING_SETTLEMENT}`)
+      let settlementState = await SettlementStateChangeModel.getBySettlementId(settlementData.id)
+      test.equal(settlementState.settlementStateId, enums.settlementStates.PENDING_SETTLEMENT, `settlement state is PENDING_SETTLEMENT`)
       test.end()
     } catch (err) {
       Logger.error(`settlementTransferTest failed with error - ${err}`)
