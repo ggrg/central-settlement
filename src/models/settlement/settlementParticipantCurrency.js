@@ -42,6 +42,23 @@ const getAccountInSettlement = async ({ settlementId, accountId }, enums = {}) =
   }
 }
 
+const getBySettlementAndAccount = async (settlementId, accountId) => {
+  try {
+    let result = await Db.settlementParticipantCurrency.query(builder => {
+      return builder
+        .innerJoin('settlementParticipantCurrencyStateChange AS spcsc', 'spcsc.settlementParticipantCurrencyStateChangeId', 'settlementParticipantCurrency.currentStateChangeId')
+        .select('settlementParticipantCurrency.*', 'spcsc.settlementStateId', 'spcsc.reason', 'spcsc.externalReference')
+        .where({ settlementId })
+        .andWhere('participantCurrencyId', accountId)
+        .first()
+    })
+    return result
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
-  getAccountInSettlement
+  getAccountInSettlement,
+  getBySettlementAndAccount
 }

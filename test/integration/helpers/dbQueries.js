@@ -26,6 +26,14 @@
 const Db = require('../../../src/models')
 
 module.exports = {
+  getTransferParticipantsByTransferId: async function (transferId) {
+    try {
+      return Db.transferParticipant.find({ transferId })
+    } catch (e) {
+      throw e
+    }
+  },
+
   // TODO: add where params to all queries, instead of looping the resultset.
   // Utilize array.filter only when it is better suited to the test than the previous
   // Underscore _ was added to the currently unused methods, please remove later

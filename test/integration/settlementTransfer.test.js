@@ -37,7 +37,19 @@ const Enums = require('../../src/models/lib/enums')
 const SettlementWindowStateChangeModel = require('../../src/models/settlementWindow/settlementWindowStateChange')
 const SettlementModel = require('../../src/models/settlement/settlement')
 const SettlementStateChangeModel = require('../../src/models/settlement/settlementStateChange')
+const SettlementParticipantCurrencyModel = require('../../src/models/settlement/settlementParticipantCurrency')
+const TransferModel = require('@mojaloop/central-ledger/src/models/transfer/transfer')
+const TransferStateChangeModel = require('@mojaloop/central-ledger/src/models/transfer/transferStateChange')
 // require('leaked-handles').set({ fullStack: true, timeout: 15000, debugSockets: true })
+
+const currency = 'USD'
+let netSettlementSenderId
+let netSenderAccountId
+let netSettlementRecipientId
+let netRecipientAccountId
+let netSettlementAmount
+let netSenderSettlementTransferId
+let netRecipientSettlementTransferId
 
 const hubId = 1
 const transferAmount = 100
@@ -131,13 +143,35 @@ Test('SettlementTransfer should', async settlementTransferTest => {
 
   await settlementTransferTest.test('PS_TRANSFERS_RECORDED for PAYER', async test => {
     try {
+      // read and store settlement participant and account data needed in remaining tests
+      let participantFilter = settlementData.participants.filter(participant => {
+        return participant.accounts.find(account => {
+          if (account.netSettlementAmount.currency === currency && account.netSettlementAmount.amount > 0) {
+            netSenderAccountId = account.id
+            netSettlementAmount = account.netSettlementAmount.amount
+            return true
+          }
+        })
+      })
+      netSettlementSenderId = participantFilter[0].id
+      participantFilter = settlementData.participants.filter(participant => {
+        return participant.accounts.find(account => {
+          if (account.netSettlementAmount.currency === currency && account.netSettlementAmount.amount < 0) {
+            netRecipientAccountId = account.id
+            return true
+          }
+        })
+      })
+      netSettlementRecipientId = participantFilter[0].id
+      // data retrieved and stored into module scope variables
+
       let params = {
         participants: [
           {
-            id: settlementData.participants[0].id,
+            id: netSettlementSenderId,
             accounts: [
               {
-                id: settlementData.participants[0].accounts[0].id,
+                id: netSenderAccountId,
                 reason: 'Transfers recorded for payer',
                 state: enums.settlementStates.PS_TRANSFERS_RECORDED
               }
@@ -145,40 +179,27 @@ Test('SettlementTransfer should', async settlementTransferTest => {
           }
         ]
       }
-      /* let res = */ await SettlementService.putById(settlementData.id, params, enums)
+      await SettlementService.putById(settlementData.id, params, enums)
 
-      // test the first one is changed to PS_TRANSFERS_RECORDED
-      // test settlement transfer is created for the first one
-      // { settlementId: settlementData.id }
-      let settlementParticipantCurrencyArray = await DbQueries.settlementParticipantCurrencyByParams()
-      test.ok(settlementParticipantCurrencyArray[0].settlementTransferId != null, 'settlement transfer created for payer')
-      test.ok(settlementParticipantCurrencyArray[1].settlementTransferId === null, 'settlement transfer not created for payee')
+      const settlementParticipantCurrencyRecord = await SettlementParticipantCurrencyModel.getBySettlementAndAccount(settlementData.id, netSenderAccountId)
+      test.equal(settlementParticipantCurrencyRecord.settlementStateId, enums.settlementStates.PS_TRANSFERS_RECORDED, 'record for payer changed to PS_TRANSFERS_RECORDED state')
 
-      // Both accounts are initially PENDING_SETTLEMENT, but later the first one is changed to PS_TRANSFERS_RECORDED."
-      let settlementParticipantCurrencyStateChangeArray = await DbQueries.settlementParticipantCurrencyStateChangeByParams()
-      test.equal(settlementParticipantCurrencyStateChangeArray.length, expectedSettlementParticipantCurrencyStateRecords, `expecting ${expectedSettlementParticipantCurrencyStateRecords} records`)
-      test.equal(settlementParticipantCurrencyStateChangeArray[0].settlementStateId, enums.settlementStates.PS_TRANSFERS_RECORDED, `transfer changed to ${enums.settlementStates.PS_TRANSFERS_RECORDED} state`)
+      netSenderSettlementTransferId = settlementParticipantCurrencyRecord.settlementTransferId
+      const transferRecord = await TransferModel.getById(netSenderSettlementTransferId)
+      test.ok(transferRecord, 'settlement transfer is created for payer')
 
-      // The last record for the settlement transfer is RECEIVED_PREPARE
-      let transferStateChangeArray = await DbQueries.transferStateChangeByParams()
-      test.equal(transferStateChangeArray[0].transferStatesId, enums.transferStates.RECEIVED_PREPARE, `latest record is in ${enums.transferStates.RECEIVED_PREPARE}`)
-      test.equal(transferStateChangeArray.length, expectedTransferStateChangeRecords, `${expectedTransferStateChangeRecords} record expected`)
+      const transferStateChangeRecord = await TransferStateChangeModel.getByTransferId(netSenderSettlementTransferId)
+      test.equal(transferStateChangeRecord.transferStateId, enums.transferStates.RECEIVED_PREPARE, 'settlement transfer for payer is RECEIVED_PREPARE')
 
-      // The settlement transfer is for the SETTLEMENT_NET_SENDER, thus: DR POSITION -800 / CR HUB_MULTILATERAL_SETTLEMENT 800 (2 transferParticipant recs to test)
-      let transferParticipantArray = await DbQueries.transferParticipantByParams([hubId], 1)
-      // TODO: transferParticipantByParams
-      transferParticipantArray = transferParticipantArray.concat(await DbQueries.transferParticipantByParams([settlementData.participants[0].id, settlementData.participants[1].id]))
-      let hms = transferParticipantArray.filter(record => {
-        return record.ledgerAccountTypeId === enums.ledgerAccountTypes.HUB_MULTILATERAL_SETTLEMENT &&
-          record.ledgerEntryTypeId === enums.ledgerEntryTypes.SETTLEMENT_NET_SENDER
+      const transferParticipantRecords = await DbQueries.getTransferParticipantsByTransferId(netSenderSettlementTransferId)
+      const hubTransferParticipant = transferParticipantRecords.find(record => {
+        return record.transferParticipantRoleTypeId === enums.transferParticipantRoleTypes.HUB
       })
-      let sender = transferParticipantArray.filter(record => {
-        return record.ledgerAccountTypeId === enums.ledgerAccountTypes.POSITION &&
-          record.ledgerEntryTypeId === enums.ledgerEntryTypes.SETTLEMENT_NET_SENDER
+      const payerTransferParticipant = transferParticipantRecords.find(record => {
+        return record.transferParticipantRoleTypeId === enums.transferParticipantRoleTypes.DFSP_POSITION
       })
-      test.equal(transferParticipantArray.length, expectedRecordsAfterPsTransferRecordedForPayer, '4 transferParticipant records expected')
-      test.equal(hms[0].amount, transferAmount, 'correct amount for hub')
-      test.equal(sender[0].amount, -transferAmount, 'correct amount for sender')
+      test.ok(payerTransferParticipant.amount < 0, `DR settlement transfer for SETTLEMENT_NET_SENDER is negative for payer ${payerTransferParticipant.amount}`)
+      test.ok(hubTransferParticipant.amount > 0, `CR settlement transfer for SETTLEMENT_NET_SENDER is positive for hub ${hubTransferParticipant.amount}`)
       test.end()
     } catch (err) {
       Logger.error(`settlementTransferTest failed with error - ${err}`)
