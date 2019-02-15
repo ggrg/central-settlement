@@ -51,14 +51,6 @@ let netSettlementAmount
 let netSenderSettlementTransferId
 let netRecipientSettlementTransferId
 
-const hubId = 1
-const transferAmount = 100
-const expectedRecordsAfterPsTransferRecordedForPayer = 6
-const expectedRecordsAfterPsTransferRecordedForPayee = 8
-let expectedTransferStateChangeRecords = 1
-let expectedSettlementStateChangeRecords = 1
-let expectedSettlementParticipantCurrencyStateRecords = 2
-
 const getEnums = async () => {
   return {
     settlementWindowStates: await Enums.settlementWindowStates(),
@@ -98,7 +90,7 @@ Test('SettlementTransfer should', async settlementTransferTest => {
 
       params = { settlementWindowId: settlementWindowId, state: enums.settlementWindowStates.CLOSED, reason: 'text' }
       res = await SettlementWindowService.close(params, enums.settlementWindowStates)
-      test.ok(res, `close operation returned result`)
+      test.ok(res, 'close settlement window operation success')
 
       let closedWindow = await SettlementWindowStateChangeModel.getBySettlementWindowId(settlementWindowId)
       let openWindow = await SettlementWindowStateChangeModel.getBySettlementWindowId(res.settlementWindowId)
@@ -115,7 +107,7 @@ Test('SettlementTransfer should', async settlementTransferTest => {
 
   await settlementTransferTest.test('create settlement should', async test => {
     try {
-      let params = {
+      const params = {
         reason: 'reason',
         settlementWindows: [
           {
@@ -124,6 +116,7 @@ Test('SettlementTransfer should', async settlementTransferTest => {
         ]
       }
       settlementData = await SettlementService.settlementEventTrigger(params, enums)
+      test.ok(settlementData, 'settlementEventTrigger operation success')
 
       let settlementWindow = await SettlementWindowStateChangeModel.getBySettlementWindowId(settlementWindowId)
       test.equal(settlementWindow.settlementWindowStateId, enums.settlementWindowStates.PENDING_SETTLEMENT, `window id ${settlementWindowId} is PENDING_SETTLEMENT`)
@@ -179,7 +172,8 @@ Test('SettlementTransfer should', async settlementTransferTest => {
           }
         ]
       }
-      await SettlementService.putById(settlementData.id, params, enums)
+      let res = await SettlementService.putById(settlementData.id, params, enums)
+      test.ok(res, 'settlement putById operation successful')
 
       const settlementParticipantCurrencyRecord = await SettlementParticipantCurrencyModel.getBySettlementAndAccount(settlementData.id, netSenderAccountId)
       test.equal(settlementParticipantCurrencyRecord.settlementStateId, enums.settlementStates.PS_TRANSFERS_RECORDED, 'record for payer changed to PS_TRANSFERS_RECORDED state')
@@ -226,7 +220,8 @@ Test('SettlementTransfer should', async settlementTransferTest => {
           }
         ]
       }
-      await SettlementService.putById(settlementData.id, params, enums)
+      let res = await SettlementService.putById(settlementData.id, params, enums)
+      test.ok(res, 'settlement putById operation successful')
 
       const settlementParticipantCurrencyRecord = await SettlementParticipantCurrencyModel.getBySettlementAndAccount(settlementData.id, netRecipientAccountId)
       test.equal(settlementParticipantCurrencyRecord.settlementStateId, enums.settlementStates.PS_TRANSFERS_RECORDED, 'record for payee changed to PS_TRANSFERS_RECORDED state')
@@ -262,27 +257,23 @@ Test('SettlementTransfer should', async settlementTransferTest => {
 
   await settlementTransferTest.test('PS_TRANSFERS_RESERVED for PAYER & PAYEE', async test => {
     try {
-      expectedTransferStateChangeRecords = 12
-      expectedSettlementStateChangeRecords++
-      expectedSettlementParticipantCurrencyStateRecords += 2
-      let params = {
+      const params = {
         participants: [
           {
-            id: settlementData.participants[0].id,
+            id: netSettlementSenderId,
             accounts: [
               {
-                id: settlementData.participants[0].accounts[0].id,
-                reason: 'Transfers recorded for payer & payee',
-                state: enums.settlementStates.PS_TRANSFERS_RESERVED,
-                externalReference: 'tr1212121212'
+                id: netSenderAccountId,
+                reason: 'Transfers reserved for payer & payee',
+                state: enums.settlementStates.PS_TRANSFERS_RESERVED
               }
             ]
           },
           {
-            id: settlementData.participants[1].id,
+            id: netSettlementRecipientId,
             accounts: [
               {
-                id: settlementData.participants[1].accounts[0].id,
+                id: netRecipientAccountId,
                 reason: 'Transfers recorded for payer & payee',
                 state: enums.settlementStates.PS_TRANSFERS_RESERVED
               }
@@ -291,6 +282,7 @@ Test('SettlementTransfer should', async settlementTransferTest => {
         ]
       }
       let res = await SettlementService.putById(settlementData.id, params, enums)
+      test.ok(res, 'settlement putById operation successful')
 
       // Both settlement accounts are now PS_TRANSFERS_RESERVED. Showing 6 records (previously 4). externalReference recorded for payer only.
       let settlementParticipantCurrencyStateChangeArray = await DbQueries.settlementParticipantCurrencyStateChangeByParams()
