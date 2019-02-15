@@ -39,32 +39,31 @@ module.exports = {
     }
   },
 
-  settlementByParams: async function () {
+  settlementByParams: async function (id) {
     try {
       return Db.settlement.query(async (builder) => {
-        return builder.select('*').orderBy('createdDate', 'desc')
+        return builder.select('*').orderBy('createdDate', 'desc').where('settlementId', id)
       })
     } catch (e) {
       throw e
     }
   },
 
-  settlementStateChangeByParams: async function () {
+  // TODO: fix
+  settlementStateChangeByParams: async function (params) {
     try {
-      return Db.settlementStateChange.query(async (builder) => {
-        return builder.select('*').orderBy('settlementId', 'desc')
-      })
+      return Db.settlementStateChange.findOne()
     } catch (e) {
       throw e
     }
   },
 
-  settlementWindowStateChangeByParams: async function (arr = []) {
+  settlementWindowStateChangeByParams: async function (idList = []) {
     try {
       return Db.settlementWindowStateChange.query(async (builder) => {
         let res = builder.select('*').orderBy('settlementWindowId', 'Desc')
-        if (arr) {
-          builder.whereIn('settlementWindowId', arr)
+        if (idList) {
+          builder.whereIn('settlementWindowId', idList)
         }
         return res
       })
@@ -73,20 +72,22 @@ module.exports = {
     }
   },
 
-  settlementParticipantCurrencyByParams_: async function () {
+  settlementParticipantCurrencyByParams: async function () {
     try {
       return Db.settlementParticipantCurrency.query(async (builder) => {
-        return builder.select('*').orderBy('1', 'desc')
+        return builder.select('*')
+          .orderBy('settlementId', 'desc')
+          .limit(2)
       })
     } catch (e) {
       throw e
     }
   },
 
-  settlementParticipantCurrencyStateChangeByParams_: async function () {
+  settlementParticipantCurrencyStateChangeByParams: async function () {
     try {
       return Db.settlementParticipantCurrencyStateChange.query(async (builder) => {
-        return builder.select('*').orderBy('createdDate', 'desc')
+        return builder.select('*').orderBy('settlementParticipantCurrencyStateChangeId', 'desc').limit(1)
       })
     } catch (e) {
       throw e
@@ -116,21 +117,20 @@ module.exports = {
     }
   },
 
-  transferParticipantByParams_: async function () {
+  // get by participants id and hub id
+  transferParticipantByParams: async function (idList = [], limit = null) {
     try {
       return Db.transferParticipant.query(async (builder) => {
-        return builder
-          // TODO: human-readable result is not needed. Remove all unnecessary alias and joins as you go
-          .innerjoin('participantCurrency as pc', 'pc.participantCurrencyId', 'transferParticipant.participantCurrencyId')
-          .innerjoin('ledgerAccountType as lat', 'lat.ledgerAccountTypeId', 'pc.ledgerAccountTypeId')
-          .innerjoin('participant as p', 'p.participantId', 'pc.participantId')
-          .innerjoin('transferParticipantRoleType as tprt', 'tprt.transferParticipantRoleTypeId', 'transferParticipant.transferParticipantRoleTypeId')
-          .innerjoin('ledgerEntryType as let', 'let.ledgerEntryTypeId', 'transferParticipant.ledgerEntryTypeId')
-          .select(`transferParticipant.transferParticipantId AS id, transferParticipant.transferId, 
-                CONCAT(transferParticipant.participantCurrencyId, '-', p.name, '-', lat.name) AS participantCurrencyId,
-                CONCAT(transferParticipant.transferParticipantRoleTypeId, '-', tprt.name) AS transferParticipantRoleTypeId,
-                CONCAT(transferParticipant.ledgerEntryTypeId, '-', let.name) AS ledgerEntryTypeId, tp.amount, tp.createdDate`)
-          .orderBy('transferParticipant.transferParticipantId', 'desc')
+        let res = builder
+          .innerJoin('participantCurrency as pc', 'pc.participantCurrencyId', 'transferParticipant.participantCurrencyId')
+          .innerJoin('participant as p', 'p.participantId', 'pc.participantId')
+          .select('*')
+          .orderBy('transferParticipantId', 'desc')
+          .limit(limit)
+        if (idList.length > 0) {
+          builder.whereIn('p.participantId', idList)
+        }
+        return res
       })
     } catch (e) {
       throw e
@@ -142,9 +142,9 @@ module.exports = {
       return Db.transferParticipant.query(async (builder) => {
         return builder.select('*')
           // TODO: human-readable result is not needed. Remove all unnecessary alias and joins as you go
-          .innerjoin('participantCurrency as pc', 'pc.participantCurrencyId', 'transferParticipant.participantCurrencyId')
-          .innerjoin('ledgerAccountType as lat', 'lat.ledgerAccountTypeId', 'pc.ledgerAccountTypeId')
-          .innerjoin('participant as p', 'p.participantId', 'pc.participantId')
+          .innerJoin('participantCurrency as pc', 'pc.participantCurrencyId', 'transferParticipant.participantCurrencyId')
+          .innerJoin('ledgerAccountType as lat', 'lat.ledgerAccountTypeId', 'pc.ledgerAccountTypeId')
+          .innerJoin('participant as p', 'p.participantId', 'pc.participantId')
           .groupByRaw(`CONCAT(transferParticipant.participantCurrencyId, '-', p.name, '-', lat.name)`)
           .orderBy('1', 'desc')
           .select(`CONCAT(transferParticipant.participantCurrencyId, '-', p.name, '-', lat.name) AS participantCurrencyId, SUM(tp.amount) AS SUM_amount`)
@@ -154,28 +154,26 @@ module.exports = {
     }
   },
 
-  transferStateChangeByParams_: async function () {
+  transferStateChangeByParams: async function () {
     try {
       return Db.transferStateChange.query(async (builder) => {
-        return builder.select('*').orderBy('1', 'desc')
+        return builder.select('*')
+          .orderBy('transferStateChangeId', 'desc')
+          .limit(1)
       })
     } catch (e) {
       throw e
     }
   },
-
-  participantPositionByParams_: async function () {
+  // TODO: crash
+  participantPositionByParams: async function () {
     try {
       return Db.participantPosition.query(async (builder) => {
         return builder
-          // TODO: human-readable result is not needed. Remove all unnecessary alias and joins as you go
-          .select(`participantPosition.participantPositionId AS id,
-                 CONCAT(participantPosition.participantCurrencyId, '-', p.name, '-', lat.name) AS participantCurrencyId,
-                 participantPosition.value, participantPosition.reservedValue, participantPosition.changedDate`)
-          .innerjoin('participantCurrency as pc', 'pc.participantCurrencyId', 'participantPosition.participantCurrencyId')
-          .innerjoin('ledgerAccountType as lat', 'lat.ledgerAccountTypeId', 'pc.ledgerAccountTypeId')
-          .innerjoin('participant as p', 'p.participantId', 'pc.participantId')
-          .orderBy('1', 'desc')
+          .select('participantPosition.participantPositionId, participantPosition.value, participantPosition.reservedValue, participantPosition.changedDate')
+          .innerJoin('participantCurrency as pc', 'pc.participantCurrencyId', 'participantPosition.participantCurrencyId')
+          .innerJoin('participant as p', 'p.participantId', 'pc.participantId')
+          .orderBy('participantPosition.participantPositionId', 'desc')
       })
     } catch (e) {
       throw e
@@ -191,11 +189,11 @@ module.exports = {
                  CONCAT(participantPositionChange.participantPositionId, '-', p.name, '-', lat.name) AS participantPositionId,
                  CONCAT(participantPositionChange.transferStateChangeId, '-', tsc.transferStateId, '-', tsc.transferId) transferStateChangeId,
                  participantPositionChange.value, participantPositionChange.reservedValue, participantPositionChange.createdDate`)
-          .innerjoin('participantPosition as pp', 'pp.participantPositionId', 'participantPositionChange.participantPositionId')
-          .innerjoin('participantCurrency as pc', 'pc.participantCurrencyId', 'pp.participantCurrencyId')
-          .innerjoin('ledgerAccountType as lat', 'lat.ledgerAccountTypeId', 'pc.ledgerAccountTypeId')
-          .innerjoin('participant as p', 'p.participantId', 'pc.participantId')
-          .innerjoin('transferStateChange as tsc', 'tsc.transferStateChangeId', 'participantPositionChange.transferStateChangeId')
+          .innerJoin('participantPosition as pp', 'pp.participantPositionId', 'participantPositionChange.participantPositionId')
+          .innerJoin('participantCurrency as pc', 'pc.participantCurrencyId', 'pp.participantCurrencyId')
+          .innerJoin('ledgerAccountType as lat', 'lat.ledgerAccountTypeId', 'pc.ledgerAccountTypeId')
+          .innerJoin('participant as p', 'p.participantId', 'pc.participantId')
+          .innerJoin('transferStateChange as tsc', 'tsc.transferStateChangeId', 'participantPositionChange.transferStateChangeId')
           .orderBy('1', 'desc')
       })
     } catch (e) {
@@ -203,21 +201,20 @@ module.exports = {
     }
   },
 
-  participantLimitByParams_: async () => {
+  participantLimitByParams: async (params) => {
+    let { idList } = params
     try {
       return Db.participantLimit.query(async (builder) => {
-        return builder
-          // TODO: human-readable result is not needed. Remove all unnecessary alias and joins as you go
+        let result = builder
           .select(`participantLimit.participantLimitId AS id,
-                 CONCAT(participantLimit.participantCurrencyId, '-', p.name, '-', lat.name) AS participantCurrencyId,
-                 CONCAT(participantLimit.participantLimitTypeId, '-', plt.name) AS participantLimitTypeId,
                  participantLimit.value, participantLimit.thresholdAlarmPercentage, participantLimit.startAfterParticipantPositionChangeId,
                  participantLimit.isActive, participantLimit.createdDate, participantLimit.createdBy`)
-          .innerjoin('participantCurrency as pc', 'pc.participantCurrencyId', 'participantLimit.participantCurrencyId')
-          .innerjoin('ledgerAccountType as lat', 'lat.ledgerAccountTypeId', 'pc.ledgerAccountTypeId')
-          .innerjoin('participant as p', 'p.participantId', 'pc.participantId')
-          .innerjoin('participantLimitType as plt', 'plt.participantLimitTypeId', 'participantLimit.participantLimitTypeId')
-          .orderBy('1', 'Desc')
+          .innerJoin('participantCurrency as pc', 'pc.participantCurrencyId', 'participantLimit.participantCurrencyId')
+          .innerJoin('participant as p', 'p.participantId', 'pc.participantId')
+        if (idList.length > 0) {
+          builder.whereIn('p.participantId', idList)
+        }
+        return result
       })
     } catch (e) {
       throw e
