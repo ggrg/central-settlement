@@ -28,7 +28,7 @@ const Test = require('tapes')(require('tape'))
 const Sinon = require('sinon')
 const Logger = require('@mojaloop/central-services-shared').Logger
 const PrepareTransferData = require('./helpers/transferData')
-const DbQueries = require('./helpers/dbQueries')
+const Models = require('./helpers/models')
 const Config = require('../../src/lib/config')
 const Db = require('../../src/models')
 const SettlementWindowService = require('../../src/domain/settlementWindow')
@@ -186,7 +186,7 @@ Test('SettlementTransfer should', async settlementTransferTest => {
       const transferStateChangeRecord = await TransferStateChangeModel.getByTransferId(netSenderSettlementTransferId)
       test.equal(transferStateChangeRecord.transferStateId, enums.transferStates.RECEIVED_PREPARE, 'settlement transfer for payer is RECEIVED_PREPARE')
 
-      const transferParticipantRecords = await DbQueries.getTransferParticipantsByTransferId(netSenderSettlementTransferId)
+      const transferParticipantRecords = await Models.getTransferParticipantsByTransferId(netSenderSettlementTransferId)
       const hubTransferParticipant = transferParticipantRecords.find(record => {
         return record.transferParticipantRoleTypeId === enums.transferParticipantRoleTypes.HUB
       })
@@ -235,7 +235,7 @@ Test('SettlementTransfer should', async settlementTransferTest => {
       const transferStateChangeRecord = await TransferStateChangeModel.getByTransferId(netRecipientSettlementTransferId)
       test.equal(transferStateChangeRecord.transferStateId, enums.transferStates.RECEIVED_PREPARE, 'settlement transfer for payee is RECEIVED_PREPARE')
 
-      const transferParticipantRecords = await DbQueries.getTransferParticipantsByTransferId(netRecipientSettlementTransferId)
+      const transferParticipantRecords = await Models.getTransferParticipantsByTransferId(netRecipientSettlementTransferId)
       const hubTransferParticipant = transferParticipantRecords.find(record => {
         return record.transferParticipantRoleTypeId === enums.transferParticipantRoleTypes.HUB
       })
