@@ -66,7 +66,6 @@ const produceMessage = async (messageProtocol, topicConf, config) => {
     }
     Logger.info(`Producer.sendMessage:: messageProtocol:'${JSON.stringify(messageProtocol)}'`)
     await producer.sendMessage(messageProtocol, topicConf)
-    await producer.disconnect()
     Logger.info('Producer::end')
     return true
   } catch (e) {

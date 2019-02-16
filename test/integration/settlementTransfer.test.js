@@ -41,6 +41,7 @@ const SettlementParticipantCurrencyModel = require('../../src/models/settlement/
 const TransferModel = require('@mojaloop/central-ledger/src/models/transfer/transfer')
 const TransferStateChangeModel = require('@mojaloop/central-ledger/src/models/transfer/transferStateChange')
 const ParticipantPositionModel = require('@mojaloop/central-ledger/src/models/position/participantPosition')
+const Producer = require('../../src/handlers/lib/kafka/producer')
 // require('leaked-handles').set({ fullStack: true, timeout: 15000, debugSockets: true })
 
 const currency = 'USD'
@@ -381,10 +382,18 @@ Test('SettlementTransfer should', async settlementTransferTest => {
     }
   })
 
-  await settlementTransferTest.test('finally disconnect database', async test => {
+  // TODO: SETTLED for PAYER and assert
+
+  // TODO: SETTLED for PAYER additional note and assert
+
+  // TODO: SETTLED for PAYEE / Settlement SETTLED and assert
+
+  await settlementTransferTest.test('finally disconnect open handles', async test => {
     try {
       await Db.disconnect()
-      test.pass('done')
+      test.pass('database connection closed')
+      await Producer.getProducer('topic-notification-event').disconnect()
+      test.pass('producer to topic-notification-event disconnected')
       test.end()
     } catch (err) {
       Logger.error(`settlementTransferTest failed with error - ${err}`)
