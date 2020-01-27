@@ -1,0 +1,83 @@
+{
+    "id": 3,
+    "settlementModel": "DEFERRED_NET",
+    "state": "PENDING_SETTLEMENT",
+    "reason": "settlement v2",
+    "createdDate": "2020-01-27T20:25:07.000Z",
+    "changedDate": "2020-01-27T20:25:07.000Z",
+    "settlementWindows": [
+        {
+            "id": 3,
+            "state": "PENDING_SETTLEMENT",
+            "reason": "settlement v2",
+            "createdDate": "2020-01-27T22:24:03.000Z",
+            "changedDate": "2020-01-27T20:25:07.000Z",
+            "content": [
+                {
+                    "id": 5,
+                    "state": "PENDING_SETTLEMENT",
+                    "ledgerAccountType": "POSITION",
+                    "currencyId": "USD",
+                    "createdDate": "2020-01-27T22:24:41.000Z",
+                    "changedDate": "2020-01-27T20:25:07.000Z"
+                },
+                {
+                    "id": 6,
+                    "state": "PENDING_SETTLEMENT",
+                    "ledgerAccountType": "POSITION",
+                    "currencyId": "TZS",
+                    "createdDate": "2020-01-27T22:24:41.000Z",
+                    "changedDate": "2020-01-27T20:25:07.000Z"
+                }
+            ]
+        }
+    ],
+    "participants": [
+        {
+            "id": 3,
+            "accounts": [
+                {
+                    "id": 5,
+                    "state": "PENDING_SETTLEMENT",
+                    "reason": "settlement v2",
+                    "netSettlementAmount": {
+                        "amount": 1,
+                        "currency": "USD"
+                    }
+                },
+                {
+                    "id": 9,
+                    "state": "PENDING_SETTLEMENT",
+                    "reason": "settlement v2",
+                    "netSettlementAmount": {
+                        "amount": 1,
+                        "currency": "TZS"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "accounts": [
+                {
+                    "id": 7,
+                    "state": "PENDING_SETTLEMENT",
+                    "reason": "settlement v2",
+                    "netSettlementAmount": {
+                        "amount": -1,
+                        "currency": "USD"
+                    }
+                },
+                {
+                    "id": 11,
+                    "state": "PENDING_SETTLEMENT",
+                    "reason": "settlement v2",
+                    "netSettlementAmount": {
+                        "amount": -1,
+                        "currency": "TZS"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,64 @@
+{
+    "id": 2,
+    "state": "PENDING_SETTLEMENT",
+    "reason": "settlement v1",
+    "createdDate": "2020-01-27T20:06:51.000Z",
+    "changedDate": "2020-01-27T20:06:51.000Z",
+    "settlementWindows": [
+        {
+            "id": 2,
+            "state": "PENDING_SETTLEMENT",
+            "reason": "settlement v1",
+            "createdDate": "2020-01-27T22:00:59.000Z",
+            "changedDate": "2020-01-27T20:06:51.000Z"
+        }
+    ],
+    "participants": [
+        {
+            "id": 3,
+            "accounts": [
+                {
+                    "id": 3,
+                    "state": "PENDING_SETTLEMENT",
+                    "reason": "settlement v1",
+                    "netSettlementAmount": {
+                        "amount": 1,
+                        "currency": "USD"
+                    }
+                },
+                {
+                    "id": 9,
+                    "state": "PENDING_SETTLEMENT",
+                    "reason": "settlement v1",
+                    "netSettlementAmount": {
+                        "amount": 1,
+                        "currency": "TZS"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "accounts": [
+                {
+                    "id": 5,
+                    "state": "PENDING_SETTLEMENT",
+                    "reason": "settlement v1",
+                    "netSettlementAmount": {
+                        "amount": -1,
+                        "currency": "USD"
+                    }
+                },
+                {
+                    "id": 11,
+                    "state": "PENDING_SETTLEMENT",
+                    "reason": "settlement v1",
+                    "netSettlementAmount": {
+                        "amount": -1,
+                        "currency": "TZS"
+                    }
+                }
+            ]
+        }
+    ]
+}

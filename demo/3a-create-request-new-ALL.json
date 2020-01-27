@@ -1,0 +1,9 @@
+{
+	"settlementModel": "DEFERRED_NET",
+	"reason": "settlement v2",
+	"settlementWindows": [
+		{
+			"id": 3
+		}
+	]
+}
